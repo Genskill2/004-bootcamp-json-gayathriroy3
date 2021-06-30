@@ -1,33 +1,32 @@
 # Add the functions in this file
 import math
 import json
-def load_journal(file_name):
-  
-  
-  f=open(file_name)
+def load_journal(filename):
+  f=open(filename)
   s=f.read()
   d=json.loads(s)
   return d
+  
+  
 
 
-def compute_phi(m,event):
-   
+def compute_phi(filename,event):
+   m=load_journal(filename)
    a=b=c=e=n1=n0=n_1=n_0=0
    
    
    for i in m:
-       
       if event in i['events']:
            n1=n1+1
-           if i['squirrel']:
+           if i['squirrel']== True:
              a=a+1
-           if not i['squirrel']:
+           else:
              c=c+1
-      if event not in i['events']:
+      else:
          n0=n0+1
          if i['squirrel']:
             e=e+1
-         if not i['squirrel']:
+         else:
             b=b+1
       if i['squirrel']:
          n_1=n_1+1
@@ -37,8 +36,8 @@ def compute_phi(m,event):
    phi=(a*b-c*e)/math.sqrt(n1*n0*n_1*n_0)
    return phi
    
-def compute_correlations(file_name):
-   d=load_journal(file_name)
+def compute_correlations(filename):
+   d=load_journal(filename)
    event_list=[]
    for i in d:
      for j in i['events']:
@@ -46,12 +45,12 @@ def compute_correlations(file_name):
           event_list.append(j)
    #print(event_list)
    k={}
-   for i in event_list:
-     k[i]=compute_phi(d,i)
+   for event in event_list:
+     k[event]=compute_phi(filename,event)
    return k
    
-def diagnose(file_name):
-   k=compute_correlations(file_name)
+def diagnose(filename):
+   k=compute_correlations(filename)
    max=-1
    key_list=list(k.keys())
    value_list=list(k.values())
